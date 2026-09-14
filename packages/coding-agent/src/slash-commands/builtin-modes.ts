@@ -6,6 +6,7 @@ import {
 	type ResolveCliModelResult,
 } from "../config/model-resolver";
 import type { SettingPath, Settings } from "../config/settings";
+import { handleGoalAcp } from "./helpers/goal";
 import { describeLoopCondition } from "../modes/loop-condition";
 import { describeLoopLimitRuntime } from "../modes/loop-limit";
 import type { InteractiveModeContext } from "../modes/types";
@@ -261,6 +262,7 @@ export const BUILTIN_MODE_SLASH_COMMANDS: ReadonlyArray<SlashCommandSpec> = [
 		],
 		inlineHint: "[objective]",
 		allowArgs: true,
+		handle: handleGoalAcp,
 		getTuiAutocompleteDescription: runtime => {
 			if (!runtime.ctx.settings.get("goal.enabled" as SettingPath)) return "Goal: disabled in settings";
 			if (runtime.ctx.planModeEnabled) return "Goal: blocked by plan mode";

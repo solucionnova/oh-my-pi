@@ -16,6 +16,7 @@ import { toolWireSchema } from "@oh-my-pi/pi-ai/utils/schema";
 import { $env, isRecord, Snowflake } from "@oh-my-pi/pi-utils";
 import { reset as resetCapabilities } from "../../capability";
 import { clearPluginRootsAndCaches, resolveActiveProjectRegistryPath } from "../../discovery/helpers";
+import { attachHeadlessGoalAdapter } from "../../goals/headless";
 import {
 	type ExtensionUIContext,
 	type ExtensionUIDialogOptions,
@@ -1070,6 +1071,7 @@ export async function runRpcMode(
 		},
 		uiContext: rpcUiContext,
 	});
+	const detachHeadlessGoalAdapter = await attachHeadlessGoalAdapter(session, "rpc");
 
 	// Output all agent events as JSON
 	session.subscribe(event => {
@@ -1641,6 +1643,7 @@ export async function runRpcMode(
 	hostUriBridge.clear("RPC client disconnected before host URI request completed");
 	await inputDispatcher.drain();
 	await shutdownCoordinator.drain();
+	detachHeadlessGoalAdapter();
 	subagentRegistry?.dispose();
 	// Dispose the main session before exiting so the browser reaper and other
 	// bounded teardown run on the stdin-EOF path too (#5643). Idempotent: a
